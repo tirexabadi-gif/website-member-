@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JKT48 Member & Jikoshoukai Directory</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome untuk Ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        jkt: {
+                            red: '#E30613',
+                            darkRed: '#B8050F',
+                            pink: '#FFF1F2',
+                            softPink: '#FFE4E6',
+                            gold: '#F59E0B',
+                            lightGold: '#FEF3C7',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom scrollbar & animasi halus */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fff1f2;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #fda4af;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #e30613;
+        }
+
+        .card-hover {
+            transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(227, 6, 19, 0.1), 0 8px 10px -6px rgba(227, 6, 19, 0.06);
+        }
+
+        /* Bingkai Kabesha khas Teater JKT48 */
+        .kabesha-frame {
+            aspect-ratio: 3 / 4;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.35s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-[#E30613] selection:text-white min-h-screen flex flex-col">
+
+    <!-- Header / Hero Section -->
+    <header class="relative bg-gradient-to-br from-[#E30613] via-red-600 to-rose-800 text-white overflow-hidden shadow-lg">
+        <!-- Dekorasi Latar Geometris Halus -->
+        <div class="absolute inset-0 opacity-15 pointer-events-none">
+            <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-white blur-3xl"></div>
+            <div class="absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-amber-300 blur-3xl"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12 relative z-10">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-xs font-semibold tracking-wider uppercase mb-3 text-rose-50">
+                        <span class="w-2 h-2 rounded-full bg-amber-300 animate-pulse"></span>
+                        Kabesha & Jikoshoukai • Gen 7 – 14
+                    </div>
+                    <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+                        Data Member & <span class="text-amber-300">Kabesha</span> JKT48
+                    </h1>
+                    <p class="mt-2.5 text-rose-100 text-sm sm:text-base max-w-2xl leading-relaxed">
+                        Direktori lengkap member JKT48 terbaru (Generasi 7–12 Member Inti & Generasi 13–14 Trainee) beserta foto kabesha dan kalimat jikoshoukai masing-masing.
+                    </p>
+                </div>
+
+                <!-- Statistik Ringkas & Tombol Lihat Kode Array -->
+                <div class="flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end gap-3 shrink-0">
+                    <div class="flex gap-2.5 sm:gap-3">
+                        <div class="bg-white/15 backdrop-blur-md border border-white/25 rounded-2xl px-4 py-2.5 text-center min-w-[88px]">
+                            <div id="stat-total" class="font-display text-2xl sm:text-3xl font-extrabold text-white">0</div>
+                            <div class="text-[11px] text-rose-100 font-medium mt-0.5">Total Member</div>
+                        </div>
+                        <div class="bg-white/15 backdrop-blur-md border border-white/25 rounded-2xl px-4 py-2.5 text-center min-w-[88px]">
+                            <div id="stat-core" class="font-display text-2xl sm:text-3xl font-extrabold text-amber-300">0</div>
+                            <div class="text-[11px] text-rose-100 font-medium mt-0.5">Gen 7–12</div>
+                        </div>
+                        <div class="bg-white/15 backdrop-blur-md border border-white/25 rounded-2xl px-4 py-2.5 text-center min-w-[88px]">
+                            <div id="stat-trainee" class="font-display text-2xl sm:text-3xl font-extrabold text-pink-200">0</div>
+                            <div class="text-[11px] text-rose-100 font-medium mt-0.5">Trainee 13–14</div>
+                        </div>
+                    </div>
+
+                    <button 
+                        type="button" 
+                        id="open-code-modal-btn"
+                        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900/40 hover:bg-slate-900/65 text-white border border-white/25 text-xs font-semibold backdrop-blur-md transition-all cursor-pointer">
+                        <i class="fa-solid fa-code text-amber-300"></i>
+                        <span>Lihat & Salin Array JS `members`</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Control Bar: Filter Generasi & Pencarian Cepat -->
+        <section aria-label="Filter dan Pencarian Member" class="bg-white rounded-2xl shadow-sm border border-rose-100 p-4 sm:p-5 mb-8 sticky top-3 z-30 backdrop-blur-xl bg-white/95">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                
+                <!-- Tombol Filter Berdasarkan Generasi -->
+                <div class="flex flex-wrap items-center gap-2" role="group" aria-label="Filter Kategori Generasi">
+                    <button 
+                        type="button" 
+                        data-filter="all" 
+                        class="filter-btn active px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 bg-[#E30613] text-white shadow-md shadow-rose-200 cursor-pointer">
+                        <i class="fa-solid fa-users text-xs"></i>
+                        <span>Semua</span>
+                        <span id="badge-all" class="ml-1 px-2 py-0.5 text-xs rounded-full bg-white/20 text-white">0</span>
+                    </button>
+
+                    <button 
+                        type="button" 
+                        data-filter="gen7-12" 
+                        class="filter-btn px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 bg-rose-50 text-rose-700 hover:bg-rose-100 cursor-pointer">
+                        <i class="fa-solid fa-star text-xs text-amber-500"></i>
+                        <span>Gen 7-12</span>
+                        <span id="badge-gen7-12" class="ml-1 px-2 py-0.5 text-xs rounded-full bg-rose-200/70 text-rose-800">0</span>
+                    </button>
+
+                    <button 
+                        type="button" 
+                        data-filter="gen13-14" 
+                        class="filter-btn px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 bg-rose-50 text-rose-700 hover:bg-rose-100 cursor-pointer">
+                        <i class="fa-solid fa-seedling text-xs text-[#E30613]"></i>
+                        <span>Gen 13-14 Trainee</span>
+                        <span id="badge-gen13-14" class="ml-1 px-2 py-0.5 text-xs rounded-full bg-rose-200/70 text-rose-800">0</span>
+                    </button>
+                </div>
+
+                <!-- Input Pencarian Cepat -->
+                <div class="relative w-full lg:w-80">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                    </div>
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        placeholder="Cari nama, panggilan, gen, jiko..." 
+                        class="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#E30613] focus:border-[#E30613] focus:bg-white transition-all"
+                    >
+                    <button 
+                        type="button" 
+                        id="clear-search" 
+                        title="Hapus pencarian"
+                        class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-[#E30613] cursor-pointer">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Info Hasil Filter -->
+            <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                <p id="result-info">Menampilkan semua member aktif.</p>
+                <span class="hidden sm:inline-flex items-center gap-1.5 text-[#E30613] font-medium">
+                    <i class="fa-regular fa-id-badge"></i> Klik kartu untuk lihat Kabesha & detail lengkap
+                </span>
+            </div>
+        </section>
+
+        <!-- Grid Daftar Kartu Member -->
+        <section aria-label="Daftar Kartu Member JKT48">
+            <div id="member-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Kartu member dirender melalui JavaScript -->
+            </div>
+
+            <!-- Empty State jika pencarian tidak ditemukan -->
+            <div id="empty-state" class="hidden text-center py-16 px-4 bg-white rounded-3xl border border-dashed border-rose-200">
+                <div class="w-16 h-16 rounded-2xl bg-rose-50 text-[#E30613] flex items-center justify-center mx-auto mb-4 text-2xl">
+                    <i class="fa-regular fa-face-sad-tear"></i>
+                </div>
+                <h3 class="font-display text-lg font-bold text-slate-800">Member tidak ditemukan</h3>
+                <p class="text-sm text-slate-500 mt-1 max-w-md mx-auto">
+                    Tidak ada member yang cocok dengan kata kunci atau filter generasi yang dipilih. Coba kata kunci lain!
+                </p>
+                <button 
+                    type="button" 
+                    id="reset-filter-btn"
+                    class="mt-5 px-5 py-2.5 bg-[#E30613] hover:bg-red-700 text-white text-sm font-semibold rounded-xl transition-colors cursor-pointer">
+                    Reset Filter & Pencarian
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal Detail Member & Kabesha -->
+    <div id="member-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm transition-opacity" role="dialog" aria-modal="true" aria-labelledby="modal-name">
+        <div class="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-rose-100 transform transition-all animate-fade-in">
+            <!-- Header Modal -->
+            <div id="modal-header-bg" class="relative px-6 py-4 bg-gradient-to-r from-[#E30613] to-rose-700 text-white flex items-center justify-between">
+                <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-rose-100">
+                    <i class="fa-solid fa-id-card-clip"></i>
+                    <span>Profil & Kabesha Member</span>
+                </div>
+                <button 
+                    type="button" 
+                    id="close-modal-btn" 
+                    aria-label="Tutup detail"
+                    class="w-8 h-8 rounded-full bg-black/20 hover:bg-black/35 text-white flex items-center justify-center transition-colors cursor-pointer">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Isi Modal: Layout 2 Kolom (Kabesha Potret 3:4 + Informasi) -->
+            <div class="p-6">
+                <div class="flex flex-col sm:flex-row gap-6 items-center sm:items-start">
+                    <!-- Frame Foto Kabesha Modal (3:4) -->
+                    <div class="w-44 sm:w-48 shrink-0 rounded-2xl border-4 border-rose-100 shadow-lg overflow-hidden bg-slate-100 kabesha-frame relative">
+                        <img 
+                            id="modal-kabesha-img" 
+                            src="" 
+                            alt="Foto Kabesha" 
+                            referrerpolicy="no-referrer"
+                            class="w-full h-full object-cover object-top"
+                        >
+                        <!-- Fallback Avatar Berinisial Elegan jika gambar diblokir hotlink -->
+                        <div id="modal-kabesha-fallback" class="hidden absolute inset-0 flex flex-col items-center justify-center text-white p-4 text-center bg-gradient-to-br from-[#E30613] to-rose-700">
+                            <div class="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center font-display text-2xl font-extrabold mb-2" id="modal-fallback-initials">
+                                CR
+                            </div>
+                            <span class="text-[11px] font-bold uppercase tracking-widest text-rose-100">JKT48 Kabesha</span>
+                            <span class="text-xs font-semibold mt-0.5 opacity-90" id="modal-fallback-nick">Christy</span>
+                        </div>
+                    </div>
+
+                    <!-- Detail Info Member -->
+                    <div class="flex-1 w-full text-center sm:text-left">
+                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-2">
+                            <span id="modal-gen-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-[#E30613]">
+                                Generasi 7
+                            </span>
+                            <span id="modal-status-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">
+                                Member Inti
+                            </span>
+                        </div>
+
+                        <h2 id="modal-name" class="font-display text-2xl font-extrabold text-slate-900 leading-snug">Angelina Christy</h2>
+                        <p class="text-sm text-[#E30613] font-semibold mt-0.5">
+                            Nama Panggilan: <span id="modal-nickname" class="text-slate-700">Christy</span>
+                        </p>
+
+                        <!-- Kotak Jikoshoukai Lengkap -->
+                        <div class="mt-4 p-4 rounded-2xl bg-rose-50/80 border border-rose-100 text-left">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs font-bold uppercase tracking-wider text-[#E30613] flex items-center gap-1.5">
+                                    <i class="fa-solid fa-quote-left"></i> Kalimat Jikoshoukai
+                                </span>
+                                <button 
+                                    type="button" 
+                                    id="modal-copy-btn"
+                                    class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-white text-[#E30613] hover:bg-[#E30613] hover:text-white border border-rose-200 transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs">
+                                    <i class="fa-regular fa-copy"></i>
+                                    <span>Salin</span>
+                                </button>
+                            </div>
+                            <p id="modal-jikoshoukai" class="text-slate-800 text-sm sm:text-base font-medium leading-relaxed italic">
+                                "Peduli dan berbaik hati, siapakah dia? Chris...ty!"
+                            </p>
+                        </div>
+
+                        <!-- URL Kabesha Info -->
+                        <div class="mt-3 flex items-center justify-between gap-2 text-[11px] text-slate-400 bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
+                            <span class="truncate" id="modal-kabesha-url">https://jkt48.com/profile/...</span>
+                            <a id="modal-kabesha-link" href="#" target="_blank" rel="noopener noreferrer" class="text-[#E30613] hover:underline font-semibold shrink-0">
+                                Buka Foto <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-slate-100 flex justify-end">
+                    <button 
+                        type="button" 
+                        id="modal-done-btn"
+                        class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold transition-colors cursor-pointer">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Preview & Copy Struktur Array JS `members` -->
+    <div id="code-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/75 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="code-modal-title">
+        <div class="bg-slate-900 text-slate-100 rounded-3xl max-w-3xl w-full overflow-hidden shadow-2xl border border-slate-700 flex flex-col max-h-[85vh] animate-fade-in">
+            <div class="px-6 py-4 bg-slate-800/90 border-b border-slate-700 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-3 h-3 rounded-full bg-[#E30613]"></span>
+                    <h3 id="code-modal-title" class="font-display font-bold text-sm sm:text-base text-white">
+                        Struktur Data Array JavaScript (<code class="text-amber-300">const members = [...]</code>)
+                    </h3>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button 
+                        type="button" 
+                        id="copy-array-code-btn"
+                        class="px-3 py-1.5 rounded-xl bg-[#E30613] hover:bg-red-700 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer">
+                        <i class="fa-regular fa-copy"></i>
+                        <span>Salin Kode Array</span>
+                    </button>
+                    <button 
+                        type="button" 
+                        id="close-code-modal-btn"
+                        class="w-8 h-8 rounded-full bg-slate-700 hover:bg-slate-600 text-slate-200 flex items-center justify-center transition-colors cursor-pointer">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-4 sm:p-6 overflow-y-auto font-mono text-xs leading-relaxed text-emerald-300 bg-slate-950">
+                <pre id="array-code-preview" class="whitespace-pre-wrap break-words"></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification (Pengganti alert) -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl border border-slate-700 flex items-center gap-3 text-sm font-medium">
+            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-check text-xs"></i>
+            </span>
+            <span id="toast-message">Jikoshoukai berhasil disalin!</span>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-rose-100 py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+            <div class="flex items-center gap-2 font-semibold text-slate-700">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#E30613]"></span>
+                <span>JKT48 Member, Kabesha & Jikoshoukai Database</span>
+            </div>
+            <p>Dilengkapi foto kabesha resmi beserta fallback avatar otomatis apabila terjadi pembatasan hotlink.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Data & Logika Interaktif -->
+    <script>
+        /**
+         * Array Data Member JKT48 Terbaru (Generasi 7 - 14)
+         * Properti:
+         * - id: Number (Unique ID)
+         * - name: String (Nama Lengkap)
+         * - nickname: String (Nama Panggilan / Panggung)
+         * - gen: Number (Nomor Generasi: 7, 8, 9, 10, 11, 12, 13, 14)
+         * - category: String ('gen7-12' | 'gen13-14')
+         * - status: String ('Member Inti' | 'Trainee')
+         * - kabesha: String (URL foto kabesha resmi jkt48.com)
+         * - jikoshoukai: String (Kalimat perkenalan khas masing-masing)
+         * - accentColor: String (Gradasi warna fallback avatar jika hotlink diblokir)
+         */
+        const members = [
+            // ================= GENERASI 7 (Member Inti) =================
+            {
+                id: 1,
+                name: "Angelina Christy",
+                nickname: "Christy",
+                gen: 7,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/angelina_christy.jpg",
+                jikoshoukai: "Peduli dan berbaik hati, siapakah dia? Chris...ty!",
+                accentColor: "from-[#E30613] to-pink-600"
+            },
+            {
+                id: 2,
+                name: "Febriola Sinambela",
+                nickname: "Olla",
+                gen: 7,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/febriola_sinambela.jpg",
+                jikoshoukai: "Dengan keajaibanku, aku akan membuat kalian selalu tertawa. Halo, aku Olla si mechanic girl!",
+                accentColor: "from-amber-500 to-orange-600"
+            },
+            {
+                id: 3,
+                name: "Freya Jayawardana",
+                nickname: "Freya",
+                gen: 7,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/freya_jayawardana.jpg",
+                jikoshoukai: "Gadis koleris yang suka berimajinasi, terangi harimu dengan senyuman karamelku. Aku Freya!",
+                accentColor: "from-amber-600 to-yellow-500"
+            },
+            {
+                id: 4,
+                name: "Helisma Putri",
+                nickname: "Eli",
+                gen: 7,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/helisma_putri.jpg",
+                jikoshoukai: "Bagai lembayung senja, dengan energi kegembiraanku, aku akan menghangatkan suasana. Halo semuanya, aku Eli!",
+                accentColor: "from-orange-500 to-rose-600"
+            },
+            {
+                id: 5,
+                name: "Jessica Chandra",
+                nickname: "Jessi",
+                gen: 7,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/jessica_chandra.jpg",
+                jikoshoukai: "Suka menari dan akan selalu berusaha untuk menjadi sumber energimu. Perkenalkan aku Jessi!",
+                accentColor: "from-red-600 to-rose-600"
+            },
+            {
+                id: 6,
+                name: "Mutiara Azzahra",
+                nickname: "Muthe",
+                gen: 7,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/mutiara_azzahra.jpg",
+                jikoshoukai: "Dengan kelincahanku, aku akan menari setiap hari. Panggil aku, Mu-mu-mu-Muthe!",
+                accentColor: "from-pink-500 to-rose-600"
+            },
+
+            // ================= GENERASI 8 (Member Inti) =================
+            {
+                id: 7,
+                name: "Cornelia Vanisa",
+                nickname: "Oniel",
+                gen: 8,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/cornelia_vanisa.jpg",
+                jikoshoukai: "Seperti teka-teki, kalian akan selalu penasaran denganku. Aku Oniel!",
+                accentColor: "from-indigo-500 to-purple-600"
+            },
+            {
+                id: 8,
+                name: "Fiony Alveria",
+                nickname: "Fiony",
+                gen: 8,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/fiony_alveria.jpg",
+                jikoshoukai: "Seperti simfoni yang menenangkan hati. Halo semuanya, aku Fiony!",
+                accentColor: "from-pink-400 to-rose-500"
+            },
+            {
+                id: 9,
+                name: "Lulu Salsabila",
+                nickname: "Lulu",
+                gen: 8,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/lulu_salsabila.jpg",
+                jikoshoukai: "Terang seperti bulan, bersinar seperti bintang. Halo semuanya, aku Lulu!",
+                accentColor: "from-sky-500 to-indigo-600"
+            },
+
+            // ================= GENERASI 9 (Member Inti) =================
+            {
+                id: 10,
+                name: "Indah Cahya",
+                nickname: "Indah",
+                gen: 9,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/indah_cahya.jpg",
+                jikoshoukai: "Tak banyak bicara, bercerita melalui tulisan. Perkenalkan aku Indah!",
+                accentColor: "from-teal-500 to-emerald-600"
+            },
+            {
+                id: 11,
+                name: "Kathrina Irene",
+                nickname: "Kathrina",
+                gen: 9,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/kathrina_irene.jpg",
+                jikoshoukai: "Never miss a chance to be a star! Halo semua, aku Kathrina!",
+                accentColor: "from-violet-500 to-fuchsia-600"
+            },
+            {
+                id: 12,
+                name: "Marsha Lenathea",
+                nickname: "Marsha",
+                gen: 9,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/marsha_lenathea.jpg",
+                jikoshoukai: "Seperti pizza yang selalu dinanti-nantikan semua orang, selalu nantikan aku, ya? Halo, aku Marsha!",
+                accentColor: "from-rose-500 to-amber-500"
+            },
+
+            // ================= GENERASI 10 (Member Inti) =================
+            {
+                id: 13,
+                name: "Amanda Sukma",
+                nickname: "Amanda",
+                gen: 10,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/amanda_sukma.jpg",
+                jikoshoukai: "Aku akan membuat hatimu berdebar kencang seperti lagu dengan 1.000 BPM. Halo semuanya, aku Amanda!",
+                accentColor: "from-[#E30613] to-pink-600"
+            },
+            {
+                id: 14,
+                name: "Aurellia",
+                nickname: "Lia",
+                gen: 10,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/aurellia.jpg",
+                jikoshoukai: "Si social butterfly yang energik dan periang! Halo semuanya, aku Lia!",
+                accentColor: "from-amber-400 to-rose-500"
+            },
+            {
+                id: 15,
+                name: "Gabriela Abigail",
+                nickname: "Ella",
+                gen: 10,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/gabriela_abigail.jpg",
+                jikoshoukai: "Ohayo! Konnichiwa! Oyasumi! Aku ingin ada di setiap harimu. Halo semuanya, aku Ella!",
+                accentColor: "from-fuchsia-500 to-pink-600"
+            },
+            {
+                id: 16,
+                name: "Jesslyn Elly",
+                nickname: "Lyn",
+                gen: 10,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/jesslyn_elly.jpg",
+                jikoshoukai: "Seperti ombak laut yang tenang, tiba-tiba aku akan menyapumu dengan banyak cinta! Halo semuanya, aku Lyn!",
+                accentColor: "from-cyan-500 to-blue-600"
+            },
+            {
+                id: 17,
+                name: "Raisha Syifa",
+                nickname: "Raisha",
+                gen: 10,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/raisha_syifa.jpg",
+                jikoshoukai: "Kalau sakura itu kembang, aku itu kembanggaanmu! Halo semuanya, aku Raisha!",
+                accentColor: "from-pink-500 to-rose-600"
+            },
+
+            // ================= GENERASI 11 (Member Inti) =================
+            {
+                id: 18,
+                name: "Alya Amanda",
+                nickname: "Alya",
+                gen: 11,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/alya_amanda.jpg",
+                jikoshoukai: "Jika hatimu sedang menangis, aku akan datang sebagai pelangi. Hai, aku Alya!",
+                accentColor: "from-rose-400 to-orange-500"
+            },
+            {
+                id: 19,
+                name: "Anindya Ramadhani",
+                nickname: "Anindya",
+                gen: 11,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/anindya_ramadhani.jpg",
+                jikoshoukai: "Si mungil hadir semanis mangga. Hai, aku Anin!",
+                accentColor: "from-amber-500 to-yellow-500"
+            },
+            {
+                id: 20,
+                name: "Cathleen Nixie",
+                nickname: "Cathy",
+                gen: 11,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/cathleen_nixie.jpg",
+                jikoshoukai: "Tring! Si peri cantik jelita, itulah aku. Hai semuanya, aku Cathy!",
+                accentColor: "from-pink-500 to-purple-500"
+            },
+            {
+                id: 21,
+                name: "Celline Thefani",
+                nickname: "Elin",
+                gen: 11,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/celline_thefani.jpg",
+                jikoshoukai: "Semanis permen kapas dan seindah bunga lavender. Haloo, perkenalkan namaku Elin!",
+                accentColor: "from-purple-500 to-indigo-500"
+            },
+            {
+                id: 22,
+                name: "Chelsea Davina",
+                nickname: "Chelsea",
+                gen: 11,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/chelsea_davina.jpg",
+                jikoshoukai: "As bright as a shooting star in the starry night sky! Hai semua, aku Chelsea!",
+                accentColor: "from-blue-500 to-indigo-600"
+            },
+            {
+                id: 23,
+                name: "Cynthia Yaputera",
+                nickname: "Cynthia",
+                gen: 11,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/cynthia_yaputera.jpg",
+                jikoshoukai: "Semangatku terus menerus meluap. POP! POP! Aku Cynthia yang selalu semangat!",
+                accentColor: "from-[#E30613] to-rose-600"
+            },
+            {
+                id: 24,
+                name: "Dena Natalia",
+                nickname: "Danella",
+                gen: 11,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/dena_natalia.jpg",
+                jikoshoukai: "Tok-tok! Si penari yang akan menarikmu ke duniaku! Hai, aku Danella!",
+                accentColor: "from-emerald-500 to-teal-600"
+            },
+            {
+                id: 25,
+                name: "Desy Natalia",
+                nickname: "Daisy",
+                gen: 11,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/desy_natalia.jpg",
+                jikoshoukai: "Seperti bunga daisy, aku akan memancarkan kesegaran dan kebahagiaan! Hai hai, aku Daisy!",
+                accentColor: "from-yellow-500 to-amber-600"
+            },
+            {
+                id: 26,
+                name: "Gendis Mayrannisa",
+                nickname: "Gendis",
+                gen: 11,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/gendis_mayrannisa.jpg",
+                jikoshoukai: "Bonjour! Periang dan pencair suasana, itulah aku. Halo semuanya, aku Gendis!",
+                accentColor: "from-pink-500 to-rose-500"
+            },
+            {
+                id: 27,
+                name: "Grace Octaviani",
+                nickname: "Gracie",
+                gen: 11,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.com/profile/grace_octaviani.jpg",
+                jikoshoukai: "Manis seperti gulali, imut seperti kelinci. Cie cie cie, Gracie!",
+                accentColor: "from-rose-400 to-pink-600"
+            },
+            {
+                id: 28,
+                name: "Greesella Adhalia",
+                nickname: "Greesel",
+                gen: 11,
+                category: "gen7-12",
+                status: "Member Inti",
+                kabesha: "https://jkt48.
